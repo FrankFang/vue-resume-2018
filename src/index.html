@@ -6,6 +6,7 @@
   <link href="css/index.css" rel="stylesheet"/>
   <link href="css/resume.css" rel="stylesheet"/>
   <link href="css/editable-span.css" rel="stylesheet"/>
+  <link href="css/login.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="page" id="app">
@@ -13,7 +14,7 @@
     <div class="upper">
       <ul class="actions">
         <li>
-          <button class="button">保存</button>
+          <button class="button" @click="onClickSave">保存</button>
         </li>
         <li>
           <button class="button">分享</button>
@@ -32,6 +33,7 @@
   </aside>
   <main>
     <div class="resume">
+      {{resume}}
       <section class="profile">
         <h1>
           <editable-span :value="resume.name" @edit="onEdit('name', $event)"></editable-span>
@@ -125,6 +127,9 @@
       </section>
     </div>
   </main>
+  <div class="login">
+    登录
+  </div>
 </div>
 
 <script src="../vendors/av-min.js"></script>
