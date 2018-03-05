@@ -1,9 +1,12 @@
 let app = new Vue({
   el: '#app',
   data: {
-    editingName: false,
-    loginVisible: false,
-    signUpVisible: false,
+    editingName: false, loginVisible: false, signUpVisible: false,
+    currentUser: {
+      id: undefined,
+      email: '',
+      fuck: 'fuck'
+    },
     resume: {
       name: '姓名',
       gender: '女',
@@ -11,8 +14,7 @@ let app = new Vue({
       jobTitle: '前端工程师',
       phone: '138111111111',
       email: 'example@example.com'
-    },
-    login: {
+    }, login: {
       email: '',
       password: ''
     },
@@ -26,9 +28,10 @@ let app = new Vue({
       this.resume[key] = value
     },
     onLogin(e){
-      AV.User.logIn(this.login.email, this.login.password).then(function (user) {
-        console.log(user)
-      }, function (error) {
+      AV.User.logIn(this.login.email, this.login.password).then((user) => {
+        this.currentUser.id = user.id
+        this.currentUser.email = user.attributes.email
+      }, (error) => {
         if (error.code === 211) {
           alert('邮箱不存在')
         } else if (error.code === 210) {
@@ -46,9 +49,8 @@ let app = new Vue({
       user.setUsername(this.signUp.email)
       user.setPassword(this.signUp.password)
       user.setEmail(this.signUp.email)
-      user.signUp().then(function (user) {
-        console.log(user)
-      }, function (error) {
+      user.signUp().then((user) => {
+      }, (error) => {
       })
     },
     onClickSave(){
@@ -65,7 +67,10 @@ let app = new Vue({
       user.set('resume', this.resume)
       user.save()
     },
-
   }
 })
 
+let currentUser = AV.User.current()
+if (currentUser) {
+  app.currentUser = currentUser.toJSON()
+}
