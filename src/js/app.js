@@ -17,6 +17,10 @@ let app = new Vue({ el: '#app',
         {name: '请填写技能名称', description: '请填写技能描述'},
         {name: '请填写技能名称', description: '请填写技能描述'},
         {name: '请填写技能名称', description: '请填写技能描述'},
+      ],
+      projects: [
+        {name: '请填写项目名称', link: 'http://...', keywords: '请填写关键词', description: '请详细描述'},
+        {name: '请填写项目名称', link: 'http://...', keywords: '请填写关键词', description: '请详细描述'},
       ]
     },
     login: {
@@ -34,8 +38,6 @@ let app = new Vue({ el: '#app',
       key = key.replace(regex, (match, number) => `.${number}`)
       // key = skills.0.name
       keys = key.split('.')
-      console.log(keys)
-      console.log(value)
       let result = this.resume
       for (let i = 0; i < keys.length; i++) {
         if (i === keys.length - 1) {
@@ -114,7 +116,15 @@ let app = new Vue({ el: '#app',
     },
     removeSkill (index) {
       this.resume.skills.splice(index, 1)
-    }
+    },
+    addProject () {
+      this.resume.projects.push(
+        {name: '请填写项目名称', link: 'http://...', keywords: '请填写关键词', description: '请详细描述'},
+      )
+    },
+    removeProject (index) {
+      this.resume.projects.splice(index, 1)
+    },
   }
 })
 let currentUser = AV.User.current()
