@@ -1,9 +1,7 @@
-let app = new Vue({
-  el: '#app',
-  data: {
-    editingName: false, loginVisible: false, signUpVisible: false,
+let app = new Vue({ el: '#app',
+  data: { editingName: false, loginVisible: false, signUpVisible: false,
     currentUser: {
-      id: undefined,
+      objectId: undefined,
       email: '',
       fuck: 'fuck'
     },
@@ -14,7 +12,8 @@ let app = new Vue({
       jobTitle: '前端工程师',
       phone: '138111111111',
       email: 'example@example.com'
-    }, login: {
+    },
+    login: {
       email: '',
       password: ''
     },
@@ -27,10 +26,15 @@ let app = new Vue({
     onEdit(key, value){
       this.resume[key] = value
     },
+    hasLogin () {
+      return !!this.currentUser.objectId
+    },
     onLogin(e){
       AV.User.logIn(this.login.email, this.login.password).then((user) => {
-        this.currentUser.id = user.id
-        this.currentUser.email = user.attributes.email
+        user = user.toJSON()
+        this.currentUser.objectId = user.objectId
+        this.currentUser.email = user.email
+        this.loginVisible = false
       }, (error) => {
         if (error.code === 211) {
           alert('邮箱不存在')
@@ -50,7 +54,13 @@ let app = new Vue({
       user.setPassword(this.signUp.password)
       user.setEmail(this.signUp.email)
       user.signUp().then((user) => {
+        alert('注册成功')
+        user = user.toJSON()
+        this.currentUser.objectId = user.objectId
+        this.currentUser.email = user.email
+        this.signUpVisible = false
       }, (error) => {
+        alert(error.rawMessage)
       })
     },
     onClickSave(){
@@ -62,15 +72,28 @@ let app = new Vue({
       }
     },
     saveResume(){
-      let {id} = AV.User.current()
-      let user = AV.Object.createWithoutData('User', id)
+      let {objectId} = AV.User.current().toJSON()
+      let user = AV.Object.createWithoutData('User', objectId)
       user.set('resume', this.resume)
-      user.save()
+      user.save().then(() => {
+        alert('保存成功')
+      }, () => {
+        alert('保存失败')
+      })
     },
+    getResume () {
+      var query = new AV.Query('User');
+      query.get(this.currentUser.objectId).then((user) => {
+        let resume = user.toJSON().resume
+        this.resume = resume
+      }, (error) => {
+        // 异常处理
+      });
+    }
   }
 })
-
 let currentUser = AV.User.current()
 if (currentUser) {
   app.currentUser = currentUser.toJSON()
+  app.getResume()
 }
