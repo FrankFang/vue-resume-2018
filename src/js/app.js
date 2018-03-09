@@ -144,6 +144,9 @@ let app = new Vue({ el: '#app',
     removeProject (index) {
       this.resume.projects.splice(index, 1)
     },
+    print(){
+      window.print()
+    }
   }
 })
 
