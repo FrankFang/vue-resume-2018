@@ -15,7 +15,7 @@
 </head>
 <body class="default">
 <div class="page" id="app">
-  <app-aside v-show="mode === 'edit'"></app-aside>
+  <app-aside v-show="mode === 'edit'" @save="onClickSave"></app-aside>
   <main>
     <resume :mode="mode" :display-resume="displayResume"></resume>
   </main>
